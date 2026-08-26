@@ -1,0 +1,54 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://status.reflexivity.com/ (HTTP 200), https://reflexivity.com/en, and observed API paths in the
+  reflexivity.com/app terminal bundle
+note: >-
+  Reflexivity operates a status page and versions its API paths, and publishes neither a versioning
+  policy nor a deprecation policy nor an SLA on any page reachable without a login or the documentation
+  password.
+status_page:
+  url: https://status.reflexivity.com/
+  status: 200
+  title: Toggle Status
+  note: >-
+    A dedicated status host, still branded "Toggle Status" after the Toggle AI to Reflexivity rename.
+    The page is a client-rendered app, so component-level state could not be read anonymously; the host
+    is real and distinct from the marketing site and from the 404-serving api host.
+versioning:
+  scheme: path
+  evidence: >-
+    The terminal SPA calls `alfred/v1` and `alfred/v1/feedback`; the authorization server publishes a
+    `mcp:theme:v3` scope alongside an unversioned `mcp:theme`. Both are path/label versioning, observed
+    rather than documented.
+  current_version: v1
+  policy_url: null
+  policy_published: false
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header_supported: unknown
+  rfc8594: unknown
+  evidence: >-
+    No deprecation or sunset policy found on reflexivity.com; the API reference where one would live is
+    password-protected. The coexistence of `mcp:theme` and `mcp:theme:v3` implies parallel versions are
+    kept running, but no retirement schedule is published.
+  deprecated_operations: []
+sla:
+  published: false
+  url: null
+changelog:
+  published: false
+  note: >-
+    https://reflexivity.com/en/changelog returns 404. Product news is published as blog posts at
+    https://reflexivity.com/en/blog and press at https://reflexivity.com/en/press, neither of which is
+    a dated API changelog.
+x-evidence:
+- url: https://status.reflexivity.com/
+  status: 200
+- url: https://reflexivity.com/en/changelog
+  status: 404
+- url: https://reflexivity.com/en/blog
+  status: 200
+- url: https://reflexivity.com/en/press
+  status: 200

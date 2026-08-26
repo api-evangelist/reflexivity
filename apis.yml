@@ -1,18 +1,57 @@
 aid: reflexivity
 name: Reflexivity
-description: 'Reflexivity is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: Reflexivity (founded 2019 in New York as Toggle AI) is an institutional investment analysis
+  platform that pairs licensed market data from S&P Global, LSEG Datastream, Cboe and Nasdaq with explainable
+  AI agents that write and execute code to answer research questions across more than 40,000 stocks, bonds
+  and commodities. Its published capabilities are Deep Research, Knowledge Graph, Portfolio Insights,
+  Scenario Analysis, Document Intelligence and Smart Screening, delivered through a browser terminal and
+  through a RESTful API sold to technology teams for custom model deployment, white-label distribution
+  and real-time data feeds. The company raised a $30M Series B in October 2024 led by Greycroft with Interactive
+  Brokers participating, is SOC 2 Type 2 audited annually, and gates both API credentials and its API
+  reference behind a sales relationship.
+image: https://reflexivity.com/favicon.ico
 url: https://raw.githubusercontent.com/api-evangelist/reflexivity/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-apis: []
+- Financial Services
+- Investment Analysis
+- Market Data
+- Artificial Intelligence
+- Machine Learning
+- Fintech
+- Research
+- Knowledge Graph
+- Agents
+apis:
+- aid: reflexivity-api
+  name: Reflexivity API
+  description: Reflexivity's institutional REST API. Documented by the company as "JSON REST based services"
+    whose requests are authenticated with an OAuth 2.0 Bearer token obtained from the Reflexivity OAuth
+    service using an account id and secret issued by the Reflexivity back office. The production host
+    api.reflexivity.com answers authenticated routes (an unauthenticated GET to /alfred/v1 returns 401
+    behind a bearer gateway); the API reference itself is password-protected, so no public OpenAPI, operation
+    list or rate-limit table could be captured.
+  humanURL: https://api-docs.tgl.ai/
+  baseURL: https://api.reflexivity.com
+  tags:
+  - Investment Analysis
+  - Financial Data
+  - Market Data
+  - Artificial Intelligence
+  properties:
+  - type: Authentication
+    url: authentication/reflexivity-authentication.yml
+  - type: OAuthScopes
+    url: scopes/reflexivity-scopes.yml
+  - type: RateLimits
+    url: rate-limits/reflexivity-rate-limits.yml
+  - type: Conventions
+    url: conventions/reflexivity-conventions.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +59,63 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.hiive.com/securities/reflexivity-stock
+  url: https://reflexivity.com/en
+- type: Documentation
+  url: https://api-docs.tgl.ai/
+- type: APIReference
+  url: https://api-docs.tgl.ai/
+- type: Blog
+  url: https://reflexivity.com/en/blog
+- type: Support
+  url: https://support.reflexivity.com/hc/en-us
+- type: SignUp
+  url: https://reflexivity.com/app
+- type: TermsOfService
+  url: https://reflexivity.com/en/terms-of-service
+- type: PrivacyPolicy
+  url: https://reflexivity.com/en/privacy-policy
+- type: StatusPage
+  url: https://status.reflexivity.com/
+- type: Pricing
+  url: https://reflexivity.com/en#solutions
+- type: WellKnown
+  url: well-known/reflexivity-well-known.yml
+- type: Lifecycle
+  url: lifecycle/reflexivity-lifecycle.yml
+- type: Conformance
+  url: conformance/reflexivity-conformance.yml
+- type: Compliance
+  url: conformance/reflexivity-conformance.yml
+- type: DomainSecurity
+  url: security/reflexivity-domain-security.yml
+- type: LLMsTxt
+  url: llms/reflexivity-llms.txt
+- type: Plans
+  url: plans/reflexivity-plans-pricing.yml
+- type: Packages
+  url: packages/reflexivity-packages.yml
+x-enrichment:
+  date: '2026-08-26'
+  status: enriched
+  artifacts_added: 13
+  pass: local-v1
+x-coverage:
+  state: gated
+  reason: customer-only-docs
+  detail: Reflexivity markets a RESTful API and its own docs say the endpoints are "detailed in the OpenAPI
+    specifications within the service documentation", but that documentation host (api-docs.tgl.ai) 301s
+    to docs.reflexivity.com and returns a Theneo "no-project-found?reason=PASSWORD_PROTECTED" interstitial,
+    while the spec paths under the live API host answer 401 rather than 404 — the contract exists and
+    is served, only never anonymously.
+  evidence:
+  - url: https://api-docs.tgl.ai/
+    status: 301
+  - url: https://docs.reflexivity.com/no-project-found?reason=PASSWORD_PROTECTED
+    status: 200
+  - url: https://api.reflexivity.com/alfred/v1/openapi.json
+    status: 401
+  - url: https://api.reflexivity.com/openapi.json
+    status: 404
+  - url: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+    status: 200
+  checked: '2026-08-26'

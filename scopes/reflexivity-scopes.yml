@@ -1,0 +1,84 @@
+generated: '2026-08-26'
+method: probed
+source: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+docs: https://api-docs.tgl.ai/
+note: >-
+  Read verbatim from Reflexivity's own RFC 8414 Authorization Server Metadata document, which is served
+  anonymously and enumerates scopes_supported. This is NOT derived from an OpenAPI spec — Reflexivity
+  publishes no public OpenAPI, and the Theneo-hosted API reference is password-protected. Every scope
+  below is the exact string the authorization server advertises. Descriptions are left empty rather than
+  invented: the AS metadata carries no scope descriptions and the scope reference page is behind the
+  documentation password. The naming is the finding — all 23 published scopes are namespaced `mcp:`, meaning
+  Reflexivity's authorization surface is organised around Model Context Protocol services rather than
+  around REST resources.
+authorization_server: https://identity.reflexivity.com
+authorization_endpoint: https://identity.reflexivity.com/oauth/authorize
+token_endpoint: https://identity.reflexivity.com/oauth/token
+registration_endpoint: https://identity.reflexivity.com/oauth/register
+grant_types_supported:
+  - authorization_code
+  - client_credentials
+  - refresh_token
+code_challenge_methods_supported:
+  - S256
+  - plain
+scope_count: 23
+scopes:
+  - name: 'mcp:*'
+    description: ''
+    note: wildcard — grants every MCP service scope
+  - name: 'mcp:alfred-integrations'
+    description: ''
+    note: >-
+      "Alfred" is Reflexivity's in-product assistant; the terminal SPA calls an `alfred/v1` API path
+  - name: 'mcp:attribution-insights'
+    description: ''
+  - name: 'mcp:earnings'
+    description: ''
+  - name: 'mcp:earnings-insights'
+    description: ''
+  - name: 'mcp:entity-performance'
+    description: ''
+  - name: 'mcp:entity-screener'
+    description: ''
+  - name: 'mcp:file-processor'
+    description: ''
+  - name: 'mcp:financial-events'
+    description: ''
+  - name: 'mcp:financial-statements'
+    description: ''
+  - name: 'mcp:insights'
+    description: ''
+  - name: 'mcp:kg-insights'
+    description: ''
+    note: knowledge-graph insights — matches the published Knowledge Graph capability page
+  - name: 'mcp:lseg-datastream-search'
+    description: ''
+    note: LSEG Datastream is named as a licensed data source on reflexivity.com
+  - name: 'mcp:news'
+    description: ''
+  - name: 'mcp:ontology'
+    description: ''
+  - name: 'mcp:price-history'
+    description: ''
+  - name: 'mcp:quant'
+    description: ''
+  - name: 'mcp:scenario-orchestrator'
+    description: ''
+    note: matches the published Scenario Analysis capability page
+  - name: 'mcp:search'
+    description: ''
+  - name: 'mcp:theme'
+    description: ''
+  - name: 'mcp:theme:v3'
+    description: ''
+    note: the only versioned scope in the set — v3 of the theme service
+  - name: 'mcp:watchlist'
+    description: ''
+  - name: 'mcp:web-search'
+    description: ''
+x-evidence:
+  fetched: '2026-08-26'
+  url: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+  http_status: 200
+  content_type: application/json; charset=utf-8

@@ -1,0 +1,93 @@
+generated: '2026-08-26'
+method: probed
+source: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+status: evidence-only
+note: >-
+  Reflexivity DEMONSTRABLY OPERATES MCP SERVERS, and does not publish an endpoint anyone can call.
+  Its own RFC 8414 authorization-server metadata — served anonymously at
+  https://identity.reflexivity.com/.well-known/oauth-authorization-server — carries 23 scopes and
+  every one of them is namespaced `mcp:` (mcp:entity-screener, mcp:financial-statements,
+  mcp:scenario-orchestrator, mcp:kg-insights, mcp:price-history, …). Those scope names map one-to-one
+  onto the capabilities marketed on reflexivity.com (Smart Screening, Document Intelligence, Scenario
+  Analysis, Knowledge Graph). The authorization server also exposes an RFC 7591 dynamic client
+  registration endpoint, which is the registration pattern MCP clients use.
+  What is NOT published is the resource: no MCP endpoint URL is discoverable from any public surface.
+  https://identity.reflexivity.com/.well-known/oauth-protected-resource returns 401 with an empty body
+  — the resource metadata that would name the MCP server is itself behind the token. mcp.reflexivity.com
+  does not resolve. The API reference that would document it is password-protected.
+  Consequence for an agent: none of this is reachable. An MCP client can discover Reflexivity's
+  authorization server and even register itself, then has nowhere to connect. That is why no
+  `type: MCPServer` pointer is emitted in apis.yml — the pointer would assert a callable agent surface
+  that the provider does not publish. This is the single highest-value thing Reflexivity could fix:
+  publishing the MCP endpoint URL (and an oauth-protected-resource document naming it) would turn an
+  already-built agent surface into a discoverable one.
+deployment:
+  mode: none
+  endpoint: ''
+  install: ''
+  package: ''
+  auth: oauth
+  verified: probed
+authorization:
+  server: https://identity.reflexivity.com
+  metadata: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+  registration_endpoint: https://identity.reflexivity.com/oauth/register
+  registration_spec: RFC 7591
+  grant_types:
+    - authorization_code
+    - client_credentials
+    - refresh_token
+  pkce:
+    - S256
+    - plain
+  scopes_ref: scopes/reflexivity-scopes.yml
+inferred_services:
+  note: >-
+    Service names taken VERBATIM from scopes_supported. These are the MCP services Reflexivity's own
+    authorization server names. Tool names and inputSchemas are NOT recorded, because tools/list is
+    unreachable and inventing them would fabricate the contract.
+  services:
+    - scope: 'mcp:alfred-integrations'
+    - scope: 'mcp:attribution-insights'
+    - scope: 'mcp:earnings'
+    - scope: 'mcp:earnings-insights'
+    - scope: 'mcp:entity-performance'
+    - scope: 'mcp:entity-screener'
+    - scope: 'mcp:file-processor'
+    - scope: 'mcp:financial-events'
+    - scope: 'mcp:financial-statements'
+    - scope: 'mcp:insights'
+    - scope: 'mcp:kg-insights'
+    - scope: 'mcp:lseg-datastream-search'
+    - scope: 'mcp:news'
+    - scope: 'mcp:ontology'
+    - scope: 'mcp:price-history'
+    - scope: 'mcp:quant'
+    - scope: 'mcp:scenario-orchestrator'
+    - scope: 'mcp:search'
+    - scope: 'mcp:theme'
+    - scope: 'mcp:theme:v3'
+    - scope: 'mcp:watchlist'
+    - scope: 'mcp:web-search'
+probes:
+  - url: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+    method: GET
+    status: 200
+  - url: https://identity.reflexivity.com/.well-known/oauth-protected-resource
+    method: GET
+    status: 401
+  - url: https://mcp.reflexivity.com/mcp
+    method: POST
+    status: '<no response> — host does not resolve'
+  - url: https://api.reflexivity.com/mcp
+    method: POST tools/list
+    status: 404
+  - url: https://api.reflexivity.com/v1/mcp
+    method: POST tools/list
+    status: 404
+  - url: https://reflexivity.com/api/mcp
+    method: POST tools/list
+    status: 404
+  - url: https://api.reflexivity.com/alfred/v1
+    method: POST tools/list
+    status: 401

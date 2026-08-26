@@ -1,0 +1,111 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  https://identity.reflexivity.com/.well-known/oauth-authorization-server (HTTP 200) and
+  https://reflexivity.com/en#security
+note: >-
+  Asserted only where a machine-readable surface or an explicit published claim supports it. No OpenAPI
+  is published, so every spec-content-derived conformance claim is recorded as unknown rather than
+  guessed.
+standards:
+- id: oauth2
+  name: OAuth 2.0 Authorization Framework (RFC 6749)
+  conforms: true
+  evidence: >-
+    Authorization server at https://identity.reflexivity.com exposes /oauth/authorize, /oauth/token and
+    /oauth/register; grant_types_supported = authorization_code, client_credentials, refresh_token.
+- id: rfc8414
+  name: OAuth 2.0 Authorization Server Metadata (RFC 8414)
+  conforms: true
+  evidence: >-
+    https://identity.reflexivity.com/.well-known/oauth-authorization-server returns HTTP 200,
+    application/json, with issuer, authorization_endpoint, token_endpoint, registration_endpoint,
+    scopes_supported, response_types_supported, grant_types_supported,
+    token_endpoint_auth_methods_supported and code_challenge_methods_supported.
+- id: rfc7591
+  name: OAuth 2.0 Dynamic Client Registration Protocol (RFC 7591)
+  conforms: true
+  evidence: >-
+    registration_endpoint https://identity.reflexivity.com/oauth/register is advertised in the RFC 8414
+    document. Not exercised — this pipeline does not POST to registration endpoints.
+- id: rfc7636
+  name: Proof Key for Code Exchange (RFC 7636)
+  conforms: true
+  evidence: >-
+    code_challenge_methods_supported = ["S256","plain"]. Note the deviation: advertising `plain`
+    alongside S256 permits a downgrade that OAuth 2.1 and RFC 7636 §4.2 both advise against.
+- id: rfc9728
+  name: OAuth 2.0 Protected Resource Metadata (RFC 9728)
+  conforms: false
+  evidence: >-
+    https://identity.reflexivity.com/.well-known/oauth-protected-resource returns HTTP 401 with an empty
+    body; https://api.reflexivity.com/.well-known/oauth-protected-resource returns 404. No anonymous
+    resource-metadata document names the protected resource, which is why the MCP endpoint is
+    undiscoverable despite the MCP scopes being published.
+- id: mcp
+  name: Model Context Protocol
+  conforms: partial
+  evidence: >-
+    23 of 23 published OAuth scopes are namespaced `mcp:` (mcp:*, mcp:entity-screener,
+    mcp:financial-statements, mcp:scenario-orchestrator, mcp:kg-insights, …) and the authorization
+    server supports dynamic client registration — the MCP authorization profile. No MCP endpoint URL is
+    publicly discoverable, so no client can complete the flow. See mcp/reflexivity-mcp.yml.
+- id: oidc
+  name: OpenID Connect Discovery
+  conforms: false
+  evidence: '/.well-known/openid-configuration returns 404 on identity.reflexivity.com and every other host'
+- id: rfc9457
+  name: Problem Details for HTTP APIs (RFC 9457)
+  conforms: unknown
+  evidence: >-
+    Error envelope not observable — the 401 from api.reflexivity.com carries content-length 0 and the
+    error reference is behind the documentation password.
+- id: rfc9116
+  name: security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on reflexivity.com and api.reflexivity.com
+- id: openapi
+  name: OpenAPI Specification
+  conforms: unknown
+  evidence: >-
+    The Reflexivity API documentation states that endpoints are "detailed in the OpenAPI specifications
+    within the service documentation", but that documentation is password-protected, so no OpenAPI
+    document could be retrieved from any host. See x-coverage in apis.yml.
+domain_standards:
+  note: >-
+    Reflexivity's market — institutional investment research and market data — has candidate domain
+    standards (FIX, FIGI, ISO 10383 MIC, ISO 6166 ISIN, LEI/ISO 17442, FDX). NONE could be checked,
+    because domain-standard conformance is read from the CONTRACT and Reflexivity publishes no contract.
+    Recorded as unknown rather than asserted; this is reward-only scoring, so an unknown is not a
+    penalty. The identifier scheme the platform uses internally is its own `ontology` /
+    `entityResolver`, visible only as a scope name.
+  declared: []
+compliance:
+  certifications:
+  - name: SOC 2 Type 2
+    status: claimed
+    evidence: >-
+      "SOC 2 Type 2 — Annual third-party audits. Proven security controls meeting institutional DDQ
+      requirements." published at https://reflexivity.com/en#security
+    report_available: on-request
+    trust_center: null
+  controls_claimed:
+  - End-to-end encryption with no persistent storage of client data
+  - Complete isolation between clients
+  - Dedicated compute resources
+  - Air-gapped from public AI models and consumer services
+  - Full audit trail with every insight traceable to source data
+  note: >-
+    Claims are published on the marketing site only. No trust center, no downloadable report index, and
+    no /.well-known/security.txt — trust.reflexivity.com does not resolve.
+x-evidence:
+- url: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+  status: 200
+- url: https://identity.reflexivity.com/.well-known/oauth-protected-resource
+  status: 401
+- url: https://identity.reflexivity.com/.well-known/openid-configuration
+  status: 404
+- url: https://reflexivity.com/en
+  status: 200
+- url: https://trust.reflexivity.com/
+  status: '<no response> — host does not resolve'

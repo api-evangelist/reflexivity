@@ -1,0 +1,46 @@
+generated: '2026-08-26'
+method: searched
+source: https://reflexivity.com/en#solutions
+note: >-
+  Reflexivity publishes no prices. The solutions section of reflexivity.com describes two packages —
+  "Platform Access" for investment teams (complete AI suite, Knowledge Graph insights, unlimited
+  document search, scenario analysis, real-time portfolio alerts) and "API Integration" for technology
+  teams (RESTful API access, custom model deployment, white-label options, real-time data feeds,
+  technical support) — and both carry a "Contact Sales" call to action with no tier, quota, unit price
+  or overage stated anywhere on the public site. https://reflexivity.com/en/pricing returns 404.
+  Packages are recorded below as named offerings, NOT as priced plans; plan_count is 0 because no
+  purchasable tier with a published price exists.
+plan_count: 0
+pricing_model: contact-sales
+free_tier: false
+self_service_signup: false
+packages:
+- name: Platform Access
+  audience: investment teams
+  price: null
+  currency: null
+  billing_period: null
+  includes:
+  - Complete AI suite
+  - Knowledge Graph insights
+  - Unlimited document search
+  - Scenario analysis
+  - Real-time portfolio alerts
+  cta: Contact Sales
+- name: API Integration
+  audience: technology teams
+  price: null
+  currency: null
+  billing_period: null
+  includes:
+  - RESTful API access
+  - Custom model deployment
+  - White-label options
+  - Real-time data feeds
+  - Technical support
+  cta: Contact Sales
+x-evidence:
+- url: https://reflexivity.com/en
+  status: 200
+- url: https://reflexivity.com/en/pricing
+  status: 404

@@ -1,0 +1,101 @@
+generated: '2026-08-26'
+method: probed
+source: direct HTTP probes of every Reflexivity host found in apis.yml and in the reflexivity.com/app SPA bundle
+note: >-
+  One real hit. identity.reflexivity.com serves an RFC 8414 OAuth 2.0 Authorization Server Metadata
+  document anonymously, and its scopes_supported enumerates 24 mcp:* scopes — the only public,
+  machine-readable description of Reflexivity's API surface we could reach. Two hosts (docs.reflexivity.com
+  and api-docs.tgl.ai, both the Theneo-hosted documentation site) answer 200 with an identical
+  ~13.5KB HTML shell for EVERY /.well-known/* path; those are catch-all soft-200s, not documents, and
+  are recorded as misses. reflexivity.com/api.reflexivity.com return honest 404s.
+hosts:
+  - host: https://identity.reflexivity.com
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: reflexivity-oauth-authorization-server.json
+        content_type: application/json; charset=utf-8
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 401
+        note: returns 401 with an empty body — the resource-metadata document is itself auth-gated
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+  - host: https://reflexivity.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.reflexivity.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://docs.reflexivity.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+        note: >-
+          NOT a document. The Theneo-hosted docs origin returns a 118-byte nginx "403 Forbidden" for
+          every /.well-known/* path. An earlier redirect-following probe landed on the
+          "no-project-found?reason=PASSWORD_PROTECTED" HTML shell (13,598 bytes) — also not a document.
+      - path: /.well-known/api-catalog
+        status: 403
+      - path: /.well-known/agent-card.json
+        status: 403
+  - host: https://api-docs.tgl.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+        note: >-
+          NOT a document. api-docs.tgl.ai 301s to docs.reflexivity.com and inherits the same
+          403 / password-protected shell behaviour.
+  - host: https://tgl.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+soft_404_control:
+  - host: https://docs.reflexivity.com
+    path: /.well-known/nonexistent-control-probe-ae
+    status: 403
+    bytes: 118
+    verdict: >-
+      docs origin refuses every /.well-known/* path identically, so no /.well-known document on the
+      documentation host can be credited
+  - host: https://api-docs.tgl.ai
+    path: /.well-known/nonexistent-control-probe-ae
+    status: 403
+    bytes: 118
+    verdict: same as docs.reflexivity.com (301 target)
+hit_count: 1
+security_txt_served: false
+agent_card_found: false

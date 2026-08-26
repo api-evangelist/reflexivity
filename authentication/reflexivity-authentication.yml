@@ -1,0 +1,93 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  https://identity.reflexivity.com/.well-known/oauth-authorization-server (RFC 8414, HTTP 200, anonymous)
+  plus the published Reflexivity API documentation at https://api-docs.tgl.ai/ and observed response
+  headers from https://api.reflexivity.com/alfred/v1 (HTTP 401)
+docs: https://api-docs.tgl.ai/
+note: >-
+  Derived from the provider's own authorization-server metadata rather than from an OpenAPI
+  securitySchemes block — Reflexivity publishes no public OpenAPI. The documentation site is
+  password-protected, so the auth model here is reconstructed from three anonymous, verifiable
+  surfaces: the RFC 8414 document, the 401 response headers on the production API host, and the
+  publicly indexed text of the API documentation's authentication page.
+summary: >-
+  OAuth 2.0. Machine clients use the client_credentials grant with an account id (client_id) and secret
+  issued by Reflexivity, exchanged at the token endpoint for a Bearer access token; interactive clients
+  use authorization_code with PKCE. The access token is presented in the HTTP Authorization header as
+  `Bearer <token>`. Credentials are issued by the Reflexivity back office — there is no self-service
+  key provisioning.
+schemes:
+  - id: oauth2_client_credentials
+    type: oauth2
+    flow: clientCredentials
+    token_url: https://identity.reflexivity.com/oauth/token
+    client_authentication:
+      - client_secret_post
+      - client_secret_basic
+      - none
+    token_type: Bearer
+    expires_in: 86400
+    expires_in_note: >-
+      24-hour access-token lifetime, stated on the Reflexivity API documentation authentication page
+    scopes_ref: scopes/reflexivity-scopes.yml
+    credential_issuance: >-
+      account id and secret are requested from the Reflexivity back office; no public sign-up for API
+      credentials was found
+  - id: oauth2_authorization_code
+    type: oauth2
+    flow: authorizationCode
+    authorization_url: https://identity.reflexivity.com/oauth/authorize
+    token_url: https://identity.reflexivity.com/oauth/token
+    refresh_supported: true
+    pkce:
+      supported: true
+      code_challenge_methods:
+        - S256
+        - plain
+      note: >-
+        `plain` is advertised alongside S256. RFC 7636 §4.2 and OAuth 2.1 both direct clients to use
+        S256 where available; advertising `plain` is a downgrade surface worth flagging to the provider.
+  - id: dynamic_client_registration
+    type: oauth2-registration
+    registration_url: https://identity.reflexivity.com/oauth/register
+    spec: RFC 7591
+    note: >-
+      An open dynamic client registration endpoint is the pattern MCP clients use to self-register.
+      Not probed with a write request — this pipeline does not POST to registration endpoints.
+  - id: bearer_http
+    type: http
+    scheme: bearer
+    header: Authorization
+    note: >-
+      Observed on https://api.reflexivity.com/alfred/v1 — an unauthenticated GET returns HTTP 401 with
+      `authorization: Bearer` and a set of `authorization-is-*` / `authorization-user-*` response
+      headers, confirming a bearer-token gateway in front of every API route.
+legacy_environment:
+  note: >-
+    The publicly indexed authentication page names https://auth.dev.rflx.co.uk/oauth/token as the token
+    endpoint. rflx.co.uk is a Reflexivity-controlled domain (identity.rflx.co.uk and
+    identity.staging.rflx.co.uk are both referenced in the reflexivity.com terminal bundle), but `dev`
+    is a non-production environment. The production issuer per the live RFC 8414 document is
+    https://identity.reflexivity.com — that is what is recorded above.
+  probed:
+    - url: https://auth.dev.rflx.co.uk/.well-known/openid-configuration
+      status: 404
+oidc:
+  openid_configuration: absent
+  probed:
+    - url: https://identity.reflexivity.com/.well-known/openid-configuration
+      status: 404
+  note: >-
+    OAuth 2.0 authorization-server metadata is published; OpenID Connect discovery is not. The
+    authorization server is an OAuth AS, not an OIDC provider, on the public surface.
+mtls: false
+api_keys: false
+x-evidence:
+  - url: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+    status: 200
+  - url: https://api.reflexivity.com/alfred/v1
+    status: 401
+  - url: https://api-docs.tgl.ai/
+    status: 301
+    note: 301 to https://docs.reflexivity.com/ which returns a PASSWORD_PROTECTED interstitial

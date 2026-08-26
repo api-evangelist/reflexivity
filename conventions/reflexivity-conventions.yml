@@ -1,0 +1,108 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  observed response headers on https://api.reflexivity.com/alfred/v1 (HTTP 401), the RFC 8414 document
+  at https://identity.reflexivity.com/.well-known/oauth-authorization-server, and the
+  reflexivity.com/app terminal bundle
+note: >-
+  Reflexivity publishes no public API reference, so this is what a client can determine about the API's
+  cross-cutting semantics WITHOUT credentials. Every field below is either observed on the wire or
+  marked unknown. Nothing here is inferred from what a financial-data API usually does.
+auth:
+  style: oauth2-bearer
+  header: Authorization
+  value_format: Bearer <access_token>
+  token_lifetime_seconds: 86400
+  ref: authentication/reflexivity-authentication.yml
+versioning:
+  style: path
+  example: /alfred/v1
+  ref: lifecycle/reflexivity-lifecycle.yml
+request_id_tracing:
+  supported: true
+  header: x-request-id
+  format: UUID
+  observed: true
+  note: >-
+    Returned on the anonymous 401. An additional `access-control-expose-headers: Conversation-Id` is
+    advertised, and `germ-conversation-id` / `germ-task-id` / `germ-tool-name` / `germ-tool-version`
+    headers are emitted (empty when unauthenticated) — an agent/tool-invocation trace surface exposed at
+    the gateway.
+  upstream_timing_header: x-envoy-upstream-service-time
+idempotency:
+  supported: unknown
+  header: null
+  scope: null
+  retention: null
+  evidence: >-
+    No Idempotency-Key header is advertised on any anonymous response and the reference documenting it
+    would be password-protected. Recorded as unknown, NOT as absent — and no `Idempotency` pointer is
+    emitted in apis.yml, because emitting one would assert a guarantee we could not observe.
+pagination:
+  style: unknown
+  params: []
+  response_fields: []
+  evidence: not observable without credentials
+error_envelope:
+  format: unknown
+  rfc9457: unknown
+  evidence: >-
+    The 401 from api.reflexivity.com/alfred/v1 has content-length 0 — the gateway rejects before any
+    body is produced, so the envelope shape cannot be read anonymously.
+rate_limit_signaling:
+  headers: []
+  ref: rate-limits/reflexivity-rate-limits.yml
+  evidence: no RateLimit-*, X-RateLimit-* or Retry-After header observed
+field_expansion: unknown
+sparse_fieldsets: unknown
+metadata_fields: unknown
+cors:
+  access_control_allow_credentials: true
+  access_control_expose_headers:
+  - Conversation-Id
+  observed: true
+transport_security:
+  tls: TLSv1.3
+  hsts_on_api_host: true
+  hsts_value: max-age=31536000; includeSubDomains
+  note: >-
+    HSTS is present on authenticated API routes (observed on the 401 from /alfred/v1) but NOT on the
+    api.reflexivity.com root 404, which is why the automated domain-security probe records
+    `hsts: null` for that host. The header is real; the root path just does not carry it.
+  ref: security/reflexivity-domain-security.yml
+dry_run_mode:
+  supported: unknown
+  evidence: no public reference to a dry-run, preview or simulate mode
+reversibility:
+  grade: unknown
+  applicable: unknown
+  note: >-
+    NOT `na`, and NOT graded. Reflexivity's published capabilities are predominantly read-side —
+    research, screening, scenario analysis, document search — which would make reversibility `na`. But
+    the OAuth scope set includes `mcp:watchlist` and `mcp:file-processor`, both of which imply state a
+    client creates and could need to undo, and the terminal exposes an `alfred/v1/feedback` write path.
+    Because the API reference is password-protected, neither the write surface nor any reversal
+    operation nor any window can be read. Asserting `na` would credit Reflexivity with having no
+    reversal problem when it plainly has at least some write surface; asserting a window the docs do not
+    state is the one error in this pipeline that could cost a user money. Recorded as unknown, with the
+    reason, so a later pass with documentation access can grade it properly.
+  write_surfaces_suspected:
+  - scope: 'mcp:watchlist'
+    reason: watchlists are user-created state
+  - scope: 'mcp:file-processor'
+    reason: document upload implies stored objects
+  - path: alfred/v1/feedback
+    reason: observed POST path in the terminal bundle
+  reversal_operations: []
+  windows: []
+cross_links:
+  errors: null
+  lifecycle: lifecycle/reflexivity-lifecycle.yml
+  authentication: authentication/reflexivity-authentication.yml
+  scopes: scopes/reflexivity-scopes.yml
+  rate_limits: rate-limits/reflexivity-rate-limits.yml
+x-evidence:
+- url: https://api.reflexivity.com/alfred/v1
+  status: 401
+- url: https://identity.reflexivity.com/.well-known/oauth-authorization-server
+  status: 200

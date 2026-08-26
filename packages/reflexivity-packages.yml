@@ -1,0 +1,52 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  npm registry search + registry.npmjs.org, pypi.org/pypi/<name>/json, api.github.com/orgs/<name>,
+  and the public Reflexivity site (reflexivity.com/en, /app)
+note: >-
+  No first-party Reflexivity client library exists on any public registry. This is a real finding, not
+  a gap in the search: Reflexivity issues API credentials only through its back office and keeps its API
+  reference password-protected, so there is no self-service path an SDK would serve.
+  Two near-misses were checked and REJECTED on ownership: the PyPI package `toggleai` (0.1.2, published
+  2026-07-30) belongs to toggleai.app, a feature-flag product, not to Reflexivity's former Toggle AI
+  identity; and the GitHub org `TogglAI` is a spam account hosting coupon-code repositories. The org
+  `toggle-ai` exists but publishes zero public repositories.
+package_count: 0
+official_sdk_count: 0
+packages: []
+registries_probed:
+- registry: npm
+  query: reflexivity
+  result: no first-party package
+- registry: npm
+  name: '@reflexivity/sdk'
+  status: 404
+- registry: pypi
+  name: reflexivity
+  status: 404
+- registry: pypi
+  name: reflexivity-sdk
+  status: 404
+- registry: pypi
+  name: reflexivity-api
+  status: 404
+- registry: pypi
+  name: toggleai
+  status: 200
+  version: 0.1.2
+  published: '2026-07-30'
+  verdict: >-
+    REJECTED — different company. project_urls point at toggleai.app / github.com/toggleai/python-sdk
+    and the summary describes "Feature Flags, Remote Configs, and Logging".
+github_orgs_probed:
+- org: reflexivity
+  status: 404
+- org: reflexivity-ai
+  status: 404
+- org: toggle-ai
+  status: 200
+  public_repos: 0
+- org: TogglAI
+  status: 200
+  public_repos: 24
+  verdict: REJECTED — unrelated spam org publishing promo-code repositories

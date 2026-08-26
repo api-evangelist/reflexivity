@@ -1,0 +1,27 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  https://api-docs.tgl.ai/ (password-protected) plus observed response headers on
+  https://api.reflexivity.com/alfred/v1
+note: >-
+  Reflexivity publishes no rate limits. The API reference that would carry them is password-protected,
+  and an unauthenticated request to the production API host returns 401 with no RateLimit-*,
+  X-RateLimit-* or Retry-After header of any kind — so neither the documented number nor the runtime
+  signal is available to an agent before it authenticates. An honest zero.
+  The one runtime signal the gateway does emit anonymously is `x-request-id` (a UUID) and an
+  `access-control-expose-headers: Conversation-Id`; those are traceability, not throttling.
+limit_count: 0
+limits: []
+response_headers:
+  rate_limit_headers_observed: []
+  retry_after_observed: false
+  exhaustion_status_code: null
+  other_headers_observed:
+  - x-request-id
+  - access-control-expose-headers: Conversation-Id
+  - x-envoy-upstream-service-time
+observed_on:
+- url: https://api.reflexivity.com/alfred/v1
+  method: GET
+  status: 401
+  note: unauthenticated probe; no throttling headers present
