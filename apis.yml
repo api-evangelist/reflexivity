@@ -9,6 +9,17 @@ description: Reflexivity (founded 2019 in New York as Toggle AI) is an instituti
   and real-time data feeds. The company raised a $30M Series B in October 2024 led by Greycroft with Interactive
   Brokers participating, is SOC 2 Type 2 audited annually, and gates both API credentials and its API
   reference behind a sales relationship.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://reflexivity.com/favicon.ico
 url: https://raw.githubusercontent.com/api-evangelist/reflexivity/refs/heads/main/apis.yml
 x-type: company
