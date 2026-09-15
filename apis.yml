@@ -65,7 +65,7 @@ tags_raw:
 - Knowledge Graph
 - Agents
 apis:
-- aid: reflexivity-api
+- aid: reflexivity:reflexivity-api
   name: Reflexivity API
   description: Reflexivity's institutional REST API. Documented by the company as "JSON REST based services"
     whose requests are authenticated with an OAuth 2.0 Bearer token obtained from the Reflexivity OAuth
