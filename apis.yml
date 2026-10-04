@@ -44,11 +44,11 @@ created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-- Financial-Services
+- Financial Services
 - Investment Analysis
 - Market Data
 - Artificial Intelligence
-- Machine-Learning
+- Machine Learning
 - Fintech
 - Research
 - Knowledge Graph
@@ -64,6 +64,8 @@ tags_raw:
 - Research
 - Knowledge Graph
 - Agents
+- Financial-Services
+- Machine-Learning
 apis:
 - aid: reflexivity:reflexivity-api
   name: Reflexivity API
