@@ -97,6 +97,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: RateLimits
+  url: rate-limits/reflexivity-rate-limits.yml
 - type: Website
   url: https://reflexivity.com/en
 - type: Documentation
